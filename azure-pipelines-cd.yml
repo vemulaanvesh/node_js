@@ -1,0 +1,31 @@
+stages:
+- stage: Deploy
+  jobs:
+  - job: Deploy	
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: HelmInstaller@0
+      displayName: 'Install Helm 3.3.4'
+      inputs:
+        helmVersion: 3.3.4
+    - task: KubectlInstaller@0
+      displayName: 'Install Kubectl latest'
+    - script: |
+       helm version
+       kubectl 
+       pwd
+       cd $(System.DefaultWorkingDirectory)/webfrontend/webfrontend
+       ls -la 
+    
+    - task: HelmDeploy@0
+      displayName: 'helm install'
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceConnection: kubetestcluster
+        azureSubscription: 'Free Trial (a1c82292-5d29-41d0-95cf-01cef3d544f3)'
+        azureResourceGroup: 'azure-k8test'
+        kubernetesCluster: MyAKS
+        command: install
+        chartType: FilePath
+        chartPath: '$(System.DefaultWorkingDirectory)/webfrontend/webfrontend'
