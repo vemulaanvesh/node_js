@@ -26,6 +26,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install -g contentful-cli
-    - run: copy package.json .
+    
+    - name: copy file
+      uses: ./
+      with:
+        source: "package.json"
+        target: "../"
+        
+    - name: run npm
     - run: npm run install .
-    - run: CMD ["npm", "run", "start:dev"]
+    
+#     -name: task
+#     - run: ["npm", "run", "start:dev"] 
